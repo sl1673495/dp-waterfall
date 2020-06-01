@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        box-sizing: border-box;
+        padding: 0;
+      }
+
+      .wrap {
+        display: flex;
+      }
+
+      .half {
+        width: 50%;
+        padding: 8px;
+      }
+
+      .img {
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="wrap" v-if="imgsLoaded">
+        <div class="half">
+          <img
+            class="img"
+            v-for="leftIndex in leftImgIndexes"
+            :src="imgs[leftIndex]"
+            :style="{ width: '100%', height: imgHeights[leftIndex] + 'px' }"
+          />
+        </div>
+        <div class="half">
+          <img
+            class="img"
+            v-for="rightIndex in rightImgIndexes"
+            :src="imgs[rightIndex]"
+            :style="{ width: '100%', height: imgHeights[rightIndex] + 'px' }"
+          />
+        </div>
+      </div>
+    </div>
+    <script src="./vue.js"></script>
+    <script src="./mock.js"></script>
+    <script src="./util.js"></script>
+    <script>
+      const halfInnerWidth = window.innerWidth / 2
+
+      new Vue({
+        el: '#app',
+        async created() {
+          const imgHeights = await loadImgHeights(this.imgs)
+          this.imgHeights = imgHeights
+          this.leftImgIndexes = dpHalf(imgHeights).indexes
+          this.rightImgIndexes = omitByIndexes(this.imgs, this.leftImgIndexes)
+          this.imgsLoaded = true
+        },
+        data() {
+          return {
+            imgs: SISTERS.slice(0, 10),
+            imgHeights: [],
+            imgsLoaded: false,
+            leftImgIndexes: [],
+            rightImgIndexes: [],
+          }
+        },
+      })
+
+      // 尽可能选出图片中高度最接近图片总高度一半的元素
+      let dpHalf = (heights) => {
+        let mid = Math.round(sum(heights) / 2)
+        let dp = []
+
+        // 基础状态 只考虑第一个图片的情况
+        dp[0] = []
+        for (let cap = 0; cap <= mid; cap++) {
+          dp[0][cap] = heights[0] > cap ? { max: 0, indexes: [] } : { max: heights[0], indexes: [0] }
+        }
+
+        for (let useHeightIndex = 1; useHeightIndex < heights.length; useHeightIndex++) {
+          if (!dp[useHeightIndex]) {
+            dp[useHeightIndex] = []
+          }
+          for (let cap = 0; cap <= mid; cap++) {
+            let usePrevHeightDp = dp[useHeightIndex - 1][cap]
+            let usePrevHeightMax = usePrevHeightDp.max
+            let currentHeight = heights[useHeightIndex]
+            // 这里有个小坑 剩余高度一定要转化为整数 否则去dp数组里取到的就是undefined了
+            let useThisHeightRestCap = Math.round(cap - heights[useHeightIndex])
+            let useThisHeightPrevDp = dp[useHeightIndex - 1][useThisHeightRestCap]
+            let useThisHeightMax = useThisHeightPrevDp ? currentHeight + useThisHeightPrevDp.max : 0
+
+            // 是否把当前图片纳入选择 如果取当前的图片大于不取当前图片的高度
+            if (useThisHeightMax > usePrevHeightMax) {
+              dp[useHeightIndex][cap] = {
+                max: useThisHeightMax,
+                indexes: useThisHeightPrevDp.indexes.concat(useHeightIndex),
+              }
+            } else {
+              dp[useHeightIndex][cap] = {
+                max: usePrevHeightMax,
+                indexes: usePrevHeightDp.indexes,
+              }
+            }
+          }
+        }
+
+        return dp[heights.length - 1][mid]
+      }
+    </script>
+  </body>
+</html>
