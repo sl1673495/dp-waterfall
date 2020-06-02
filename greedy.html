@@ -11,6 +11,13 @@
         padding: 0;
       }
 
+      .link {
+        display: block;
+        padding: 8px;
+        text-align: center;
+        color: red;
+      }
+
       .wrap {
         display: flex;
       }
@@ -26,6 +33,7 @@
     </style>
   </head>
   <body>
+    <a class="link" href="./index.html">查看动态规划结果</a>
     <div id="app">
       <div class="wrap" v-if="imgsLoaded">
         <div class="half">
@@ -64,7 +72,7 @@
         },
         data() {
           return {
-            imgs: SISTERS.slice(0, 20),
+            imgs: SISTERS.slice(0, 15),
             imgHeights: [],
             imgsLoaded: false,
             leftImgIndexes: [],
