@@ -39,3 +39,14 @@ let omitByIndexes = (arr, omitIndexes) => {
   }
   return res
 }
+
+let findNearest = (arr, num) => {
+  let prevIndex = 0
+  for (let index in arr) {
+    if (index >= num && prevIndex < num) {
+      return index
+    }
+    prevIndex = index
+  }
+  return num
+}

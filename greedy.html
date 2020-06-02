@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        box-sizing: border-box;
+        padding: 0;
+      }
+
+      .wrap {
+        display: flex;
+      }
+
+      .half {
+        width: 50%;
+        padding: 8px;
+      }
+
+      .img {
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="wrap" v-if="imgsLoaded">
+        <div class="half">
+          <img
+            class="img"
+            v-for="leftIndex in leftImgIndexes"
+            :src="imgs[leftIndex]"
+            :style="{ width: '100%', height: imgHeights[leftIndex] + 'px' }"
+          />
+        </div>
+        <div class="half">
+          <img
+            class="img"
+            v-for="rightIndex in rightImgIndexes"
+            :src="imgs[rightIndex]"
+            :style="{ width: '100%', height: imgHeights[rightIndex] + 'px' }"
+          />
+        </div>
+      </div>
+    </div>
+    <script src="./vue.js"></script>
+    <script src="./mock.js"></script>
+    <script src="./util.js"></script>
+    <script>
+      const halfInnerWidth = window.innerWidth / 2
+
+      new Vue({
+        el: "#app",
+        async created() {
+          const imgHeights = await loadImgHeights(this.imgs)
+          this.imgHeights = imgHeights
+          const { left, right } = greedy(imgHeights)
+          this.leftImgIndexes = left
+          this.rightImgIndexes = right
+          this.imgsLoaded = true
+        },
+        data() {
+          return {
+            imgs: SISTERS.slice(0, 20),
+            imgHeights: [],
+            imgsLoaded: false,
+            leftImgIndexes: [],
+            rightImgIndexes: [],
+          }
+        },
+      })
+
+      let greedy = (heights) => {
+        let mid = Math.round(sum(heights) / 2)
+        let total = 0
+        let left = []
+        let right = []
+        let useLeft = true
+
+        heights.forEach((height, index) => {
+          if (total > mid) {
+            useLeft = false
+          }
+          if (useLeft) {
+            left.push(index)
+          } else {
+            right.push(index)
+          }
+          total += height
+        })
+
+        console.log("left: ", left)
+        console.log("right: ", right)
+        return { left, right }
+      }
+    </script>
+  </body>
+</html>
