@@ -1,7 +1,8 @@
-const bodyWidth = Number(
+let bodyWidth = Number(
   getComputedStyle(document.body).width.replace("px", ""),
 )
-const halfBodyWidth = bodyWidth / 2
+
+let halfBodyWidth = bodyWidth / 2
 
 let loadImgHeights = (imgs) => {
   return new Promise((resolve, reject) => {
