@@ -1,3 +1,8 @@
+const bodyWidth = Number(
+  getComputedStyle(document.body).width.replace("px", ""),
+)
+const halfBodyWidth = bodyWidth / 2
+
 let loadImgHeights = (imgs) => {
   return new Promise((resolve, reject) => {
     const length = imgs.length
@@ -13,7 +18,7 @@ let loadImgHeights = (imgs) => {
       }
       img.onload = () => {
         const ratio = img.height / img.width
-        const halfHeight = ratio * halfInnerWidth
+        const halfHeight = ratio * halfBodyWidth
         // 高度按屏幕一半的比例来计算
         heights[index] = halfHeight
         checkIfFinished()

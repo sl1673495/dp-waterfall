@@ -11,6 +11,11 @@
         padding: 0;
       }
 
+      body {
+        max-width: 500px;
+        margin: auto;
+      }
+
       .link {
         display: block;
         padding: 8px;
@@ -58,8 +63,6 @@
     <script src="./mock.js"></script>
     <script src="./util.js"></script>
     <script>
-      const halfInnerWidth = window.innerWidth / 2
-
       new Vue({
         el: '#app',
         async created() {
