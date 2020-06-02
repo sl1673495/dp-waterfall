@@ -72,7 +72,7 @@
         },
         data() {
           return {
-            imgs: SISTERS.slice(0, 15),
+            imgs: SISTERS.slice(0, 10),
             imgHeights: [],
             imgsLoaded: false,
             leftImgIndexes: [],
@@ -84,24 +84,22 @@
       let greedy = (heights) => {
         let mid = Math.round(sum(heights) / 2)
         let total = 0
+        let leftHeights = []
+        let rightHeights = []
         let left = []
         let right = []
-        let useLeft = true
 
         heights.forEach((height, index) => {
-          if (total > mid) {
-            useLeft = false
-          }
-          if (useLeft) {
-            left.push(index)
-          } else {
+          if (sum(leftHeights) > sum(rightHeights)) {
             right.push(index)
+            rightHeights.push(height)
+          } else {
+            left.push(index)
+            leftHeights.push(height)
           }
           total += height
         })
 
-        console.log("left: ", left)
-        console.log("right: ", right)
         return { left, right }
       }
     </script>

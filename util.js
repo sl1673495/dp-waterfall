@@ -28,7 +28,7 @@ let loadImgHeights = (imgs) => {
   })
 }
 
-let sum = (nums) => nums.reduce((a, b) => a + b)
+let sum = (nums) => nums.reduce((a, b) => a + b, 0)
 
 let omitByIndexes = (arr, omitIndexes) => {
   let res = []
