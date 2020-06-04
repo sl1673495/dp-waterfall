@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="referrer" content="never">
+    <meta name="referrer" content="never" />
     <title>Document</title>
     <style>
       * {
@@ -16,7 +16,7 @@
         max-width: 500px;
         margin: auto;
       }
-      
+
       .link {
         display: block;
         padding: 8px;
@@ -90,20 +90,19 @@
       let greedy = (heights) => {
         let mid = Math.round(sum(heights) / 2)
         let total = 0
-        let leftHeights = []
-        let rightHeights = []
+        let leftHeight = 0
+        let rightHeight = 0
         let left = []
         let right = []
 
         heights.forEach((height, index) => {
-          if (sum(leftHeights) > sum(rightHeights)) {
+          if (leftHeight >= rightHeight) {
             right.push(index)
-            rightHeights.push(height)
+            rightHeight += height
           } else {
             left.push(index)
-            leftHeights.push(height)
+            leftHeight += height
           }
-          total += height
         })
 
         return { left, right }
